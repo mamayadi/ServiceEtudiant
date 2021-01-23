@@ -1,6 +1,8 @@
 package com.example.serviceetudiant.model;
 
-public class ServiceUser {
+import java.io.Serializable;
+
+public class ServiceUser implements Serializable {
     private int idService;
     private int idUser;
     private String dateDemande;

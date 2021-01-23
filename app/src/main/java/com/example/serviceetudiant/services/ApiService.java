@@ -1,10 +1,13 @@
 package com.example.serviceetudiant.services;
 
+import android.os.StrictMode;
+
 import com.example.serviceetudiant.model.ServiceUser;
 import com.example.serviceetudiant.model.User;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.HttpResponse;
@@ -14,20 +17,26 @@ import org.json.JSONObject;
 
 public class ApiService {
 
-    String url = "http://localhost/serviceetudiant/";
+    String url = "http://192.168.0.4/serviceetudiant/";
 
-    public JSONObject login(String login, String passwd) {
+    public User login(String login, String passwd) {
         try {
+            StrictMode.enableDefaults();
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(url + "login.php");
             JSONObject jsonBody = new JSONObject();
             jsonBody.put("login", login);
             jsonBody.put("passwd", passwd);
             httppost.setHeader("Content-type", "application/json");
+
+            StringEntity se = new StringEntity(jsonBody.toString());
+            httppost.setEntity(se);
             HttpResponse response = httpclient.execute(httppost);
             String jsonString = EntityUtils.toString(response.getEntity());
+
             JSONObject userBody = new JSONObject(jsonString);
-            return userBody;
+            User user = new User(userBody.getInt("id"), userBody.getInt("iu"), userBody.getString("nom"), userBody.getString("prenom"), userBody.getInt("id_etablissement"), userBody.getString("login"), userBody.getString("passwd"), userBody.getString("autorisation"));
+            return user;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,7 +97,7 @@ public class ApiService {
     public JSONArray getServiceUserById(int userId) {
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpGet httpget = new HttpGet(url + "serviceuser.php?id="+userId);
+            HttpGet httpget = new HttpGet(url + "serviceuser.php?id=" + userId);
             HttpResponse response = httpclient.execute(httpget);
             String jsonString = EntityUtils.toString(response.getEntity());
             JSONArray serviceJsonArr = new JSONArray(jsonString);

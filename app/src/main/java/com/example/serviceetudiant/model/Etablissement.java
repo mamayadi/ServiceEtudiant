@@ -2,21 +2,19 @@ package com.example.serviceetudiant.model;
 
 import java.io.Serializable;
 
-public class Service implements Serializable {
+public class Etablissement implements Serializable {
     private int id;
     private String libelle;
+    private String adresse;
 
-    public Service(int id, String libelle) {
+    public Etablissement(int id, String libelle, String adresse) {
         this.id = id;
         this.libelle = libelle;
+        this.adresse = adresse;
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getLibelle() {
@@ -25,5 +23,13 @@ public class Service implements Serializable {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
     }
 }
