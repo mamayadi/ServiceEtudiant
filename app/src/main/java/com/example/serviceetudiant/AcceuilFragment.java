@@ -7,6 +7,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.serviceetudiant.model.ServiceUser;
+import com.example.serviceetudiant.model.User;
+import com.example.serviceetudiant.services.ApiService;
+import com.example.serviceetudiant.utils.SessionManager;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +22,11 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class AcceuilFragment extends Fragment {
-
+    SessionManager session;
+    ApiService apiService = new ApiService();
+    TextView welcomeTxt;
+    TextView totalDemander;
+    TextView totalTerminer;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -58,7 +70,28 @@ public class AcceuilFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_acceuil, container, false);
+        session = new SessionManager(v.getContext());
+        User connectedUser = session.getConnectedUser();
+        List<ServiceUser> serviceUserList = apiService.getServiceUserById(connectedUser.getId());
+        welcomeTxt = (TextView) v.findViewById(R.id.welcomeTxt);
+        totalDemander = (TextView) v.findViewById(R.id.totalDemander);
+        totalTerminer = (TextView) v.findViewById(R.id.totalTerminer);
+        welcomeTxt.setText("Bienvenue,\n"+ connectedUser.getFullName());
+        int totalServiceDemander = 0;
+        int totalServiceTerminer = 0;
+        for (ServiceUser serviceUser: serviceUserList) {
+            if(serviceUser.getEtatDemande().equalsIgnoreCase("demander")){
+                totalServiceDemander +=1;
+            }
+            if(serviceUser.getEtatDemande().equalsIgnoreCase("terminer")){
+                totalServiceTerminer +=1;
+            }
+        }
+        totalDemander.setText(String.format("%d", totalServiceDemander));
+        totalTerminer.setText(String.format("%d", totalServiceTerminer));
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_acceuil, container, false);
+        return v;
     }
 }

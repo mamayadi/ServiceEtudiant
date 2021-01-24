@@ -2,6 +2,7 @@ package com.example.serviceetudiant.services;
 
 import android.os.StrictMode;
 
+import com.example.serviceetudiant.model.Etablissement;
 import com.example.serviceetudiant.model.Service;
 import com.example.serviceetudiant.model.ServiceUser;
 import com.example.serviceetudiant.model.User;
@@ -47,7 +48,7 @@ public class ApiService {
         return null;
     }
 
-    public JSONObject signup(User user) {
+    public User signup(User user) {
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(url + "signup.php");
@@ -60,10 +61,13 @@ public class ApiService {
             jsonBody.put("passwd", user.getPasswd());
             jsonBody.put("autorisation", user.getAutorisation());
             httppost.setHeader("Content-type", "application/json");
+            StringEntity se = new StringEntity(jsonBody.toString());
+            httppost.setEntity(se);
             HttpResponse response = httpclient.execute(httppost);
             String jsonString = EntityUtils.toString(response.getEntity());
             JSONObject userBody = new JSONObject(jsonString);
-            return userBody;
+            User signedUpUser = new User(userBody.getInt("id"), userBody.getInt("iu"), userBody.getString("nom"), userBody.getString("prenom"), userBody.getInt("id_etablissement"), userBody.getString("login"), userBody.getString("passwd"), userBody.getString("autorisation"));
+            return signedUpUser;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,7 +82,7 @@ public class ApiService {
             String jsonString = EntityUtils.toString(response.getEntity());
             JSONArray serviceJsonArr = new JSONArray(jsonString);
             List<Service> services = new ArrayList<Service>();
-            for(int i=0;i<serviceJsonArr.length();i++){
+            for (int i = 0; i < serviceJsonArr.length(); i++) {
                 services.add(
                         new Service(
                                 Integer.valueOf(serviceJsonArr.getJSONObject(i).get("id").toString()),
@@ -93,14 +97,24 @@ public class ApiService {
         return null;
     }
 
-    public JSONArray getAllEtablissement() {
+    public List<Etablissement> getAllEtablissement() {
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url + "etablissement.php");
             HttpResponse response = httpclient.execute(httpget);
             String jsonString = EntityUtils.toString(response.getEntity());
             JSONArray etablissementJsonArr = new JSONArray(jsonString);
-            return etablissementJsonArr;
+            List<Etablissement> etablissements = new ArrayList<Etablissement>();
+            for (int i = 0; i < etablissementJsonArr.length(); i++) {
+                etablissements.add(
+                        new Etablissement(
+                                Integer.valueOf(etablissementJsonArr.getJSONObject(i).get("id").toString()),
+                                etablissementJsonArr.getJSONObject(i).get("libelle").toString(),
+                                etablissementJsonArr.getJSONObject(i).get("adresse").toString()
+                        )
+                );
+            }
+            return etablissements;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,7 +129,7 @@ public class ApiService {
             String jsonString = EntityUtils.toString(response.getEntity());
             JSONArray serviceUserJsonArr = new JSONArray(jsonString);
             List<ServiceUser> serviceUserArrayList = new ArrayList<ServiceUser>();
-            for(int i=0;i<serviceUserJsonArr.length();i++){
+            for (int i = 0; i < serviceUserJsonArr.length(); i++) {
                 serviceUserArrayList.add(
                         new ServiceUser(
                                 Integer.valueOf(serviceUserJsonArr.getJSONObject(i).get("id").toString()),

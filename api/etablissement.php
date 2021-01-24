@@ -9,7 +9,7 @@ exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-// header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 // $obj = json_decode(file_get_contents('php://input'), true);
 $stmt = $mysqli->prepare("SELECT `id`, `libelle`, `adresse` FROM etablissement;");
 $stmt->execute();

@@ -23,6 +23,16 @@ public class User implements Serializable {
         this.autorisation = autorisation;
     }
 
+    public User(int iu, String nom, String prenom, int id_etablissement, String login, String passwd, String autorisation) {
+        this.iu = iu;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.id_etablissement = id_etablissement;
+        this.login = login;
+        this.passwd = passwd;
+        this.autorisation = autorisation;
+    }
+
     public int getId() {
         return id;
     }

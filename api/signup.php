@@ -17,12 +17,16 @@ $idEtablissement = $obj['id_etablissement'];
 $login = $obj['login'];
 $passwd = $obj['passwd'];
 $autorisation = $obj['autorisation'];
-//  var_dump($obj['iu']);die;
 $stmt = $mysqli->prepare("INSERT INTO user (`iu`, `nom`, `prenom`, `id_etablissement`, `login`, `passwd`, `autorisation`) VALUES ('$iu' , '$nom', '$prenom', '$idEtablissement' , '$login' , '$passwd', '$autorisation');");
 $stmt->execute();
-// $result = $stmt->get_result();
-// $outp = $result->fetch_all(MYSQLI_ASSOC);
-echo json_encode($obj);
+$last_id = $stmt->insert_id;
+$stmt = $mysqli->prepare("SELECT `id`, `iu`, `nom`, `prenom`, `id_etablissement`, `login`,`passwd`, `autorisation` FROM user where id='$last_id' Limit 1;");
+$stmt->execute();
+$result = $stmt->get_result();
+$outp = $result->fetch_all(MYSQLI_ASSOC);
+if(!empty($outp)){
+    echo json_encode($outp[0]);
+}
 $stmt->close();
 $mysqli->close();
 }

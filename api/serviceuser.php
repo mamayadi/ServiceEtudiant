@@ -19,7 +19,7 @@ $stmt->execute();
 echo json_encode($obj);
 $mysqli->close();
 } else  if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['id'])) {
-// header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 // $obj = json_decode(file_get_contents('php://input'), true);
 $id=$_GET["id"];
 // var_dump($id); die;
@@ -30,7 +30,7 @@ $outp = $result->fetch_all(MYSQLI_ASSOC);
 echo json_encode($outp);
 $mysqli->close();
 } else {
-// header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 // $obj = json_decode(file_get_contents('php://input'), true);
 $stmt = $mysqli->prepare("SELECT `id`, `id_service`, `id_user`, `date_demande`, `etat_demande` FROM service_user;");
 $stmt->execute();

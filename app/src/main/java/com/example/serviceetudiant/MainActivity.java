@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnLogin;
     EditText loginInput;
     EditText passwordInput;
-    TextView btnSignup;
+    Button btnSignup;
     ApiService api = new ApiService();
 
     @Override
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         loginInput = (EditText) findViewById(R.id.loginInput);
         passwordInput = (EditText) findViewById(R.id.passwordInput);
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnSignup = (TextView) findViewById(R.id.btnSignup);
+        btnSignup = (Button) findViewById(R.id.btnSignup);
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "User not found", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent ind = new Intent(MainActivity.this, SignUpActivity.class);
+                startActivity(ind);
             }
         });
 
