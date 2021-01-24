@@ -82,4 +82,7 @@ public class User implements Serializable {
     public void setAutorisation(String autorisation) {
         this.autorisation = autorisation;
     }
+    public String getFullName(){
+        return this.nom.substring(0, 1).toUpperCase()+ this.nom.substring(1, this.nom.length()).toLowerCase()  + ' ' + this.prenom.toUpperCase();
+    }
 }
