@@ -13,7 +13,7 @@ header("Content-Type: application/json; charset=UTF-8");
 $obj = json_decode(file_get_contents('php://input'), true);
 $login=$obj['login'];
 $passwd=$obj['passwd'];
-$stmt = $mysqli->prepare("SELECT `id`, `iu`, `nom`, `prenom`, `id_etablissement`, `login`, `autorisation` FROM user where login='$login' and passwd='$passwd' Limit 1;");
+$stmt = $mysqli->prepare("SELECT `id`, `iu`, `nom`, `prenom`, `id_etablissement`, `login`,`passwd`, `autorisation` FROM user where login='$login' and passwd='$passwd' Limit 1;");
 $stmt->execute();
 $result = $stmt->get_result();
 $outp = $result->fetch_all(MYSQLI_ASSOC);

@@ -3,4 +3,7 @@
     <!-- Used in NavigationDrawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="choix_service_fragment">Choisir un service à demander</string>
+    <string name="btn_service_fragment">Demande la service</string>
+
 </resources>

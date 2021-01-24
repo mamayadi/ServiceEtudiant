@@ -2,6 +2,7 @@ package com.example.serviceetudiant.services;
 
 import android.os.StrictMode;
 
+import com.example.serviceetudiant.model.Service;
 import com.example.serviceetudiant.model.ServiceUser;
 import com.example.serviceetudiant.model.User;
 
@@ -14,6 +15,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApiService {
 
@@ -66,14 +70,23 @@ public class ApiService {
         return null;
     }
 
-    public JSONArray getAllServices() {
+    public List<Service> getAllServices() {
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url + "service.php");
             HttpResponse response = httpclient.execute(httpget);
             String jsonString = EntityUtils.toString(response.getEntity());
             JSONArray serviceJsonArr = new JSONArray(jsonString);
-            return serviceJsonArr;
+            List<Service> services = new ArrayList<Service>();
+            for(int i=0;i<serviceJsonArr.length();i++){
+                services.add(
+                        new Service(
+                                Integer.valueOf(serviceJsonArr.getJSONObject(i).get("id").toString()),
+                                serviceJsonArr.getJSONObject(i).get("libelle").toString()
+                        )
+                );
+            }
+            return services;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,21 +107,33 @@ public class ApiService {
         return null;
     }
 
-    public JSONArray getServiceUserById(int userId) {
+    public List<ServiceUser> getServiceUserById(int userId) {
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url + "serviceuser.php?id=" + userId);
             HttpResponse response = httpclient.execute(httpget);
             String jsonString = EntityUtils.toString(response.getEntity());
-            JSONArray serviceJsonArr = new JSONArray(jsonString);
-            return serviceJsonArr;
+            JSONArray serviceUserJsonArr = new JSONArray(jsonString);
+            List<ServiceUser> serviceUserArrayList = new ArrayList<ServiceUser>();
+            for(int i=0;i<serviceUserJsonArr.length();i++){
+                serviceUserArrayList.add(
+                        new ServiceUser(
+                                Integer.valueOf(serviceUserJsonArr.getJSONObject(i).get("id").toString()),
+                                Integer.valueOf(serviceUserJsonArr.getJSONObject(i).get("id_service").toString()),
+                                Integer.valueOf(serviceUserJsonArr.getJSONObject(i).get("id_user").toString()),
+                                serviceUserJsonArr.getJSONObject(i).get("date_demande").toString(),
+                                serviceUserJsonArr.getJSONObject(i).get("etat_demande").toString()
+                        )
+                );
+            }
+            return serviceUserArrayList;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public JSONObject addServiceUser(ServiceUser serviceUser) {
+    public ServiceUser addServiceUser(ServiceUser serviceUser) {
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(url + "serviceuser.php");
@@ -118,10 +143,20 @@ public class ApiService {
             jsonBody.put("date_demande", serviceUser.getDateDemande());
             jsonBody.put("etat_demande", serviceUser.getEtatDemande());
             httppost.setHeader("Content-type", "application/json");
+
+
+            StringEntity se = new StringEntity(jsonBody.toString());
+            httppost.setEntity(se);
             HttpResponse response = httpclient.execute(httppost);
             String jsonString = EntityUtils.toString(response.getEntity());
             JSONObject serviceUserObject = new JSONObject(jsonString);
-            return serviceUserObject;
+            ServiceUser submittedService = new ServiceUser(
+                    Integer.valueOf(serviceUserObject.get("id_service").toString()),
+                    Integer.valueOf(serviceUserObject.get("id_user").toString()),
+                    serviceUserObject.get("date_demande").toString(),
+                    serviceUserObject.get("etat_demande").toString()
+            );
+            return submittedService;
         } catch (Exception e) {
             e.printStackTrace();
         }
