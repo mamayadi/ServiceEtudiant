@@ -59,11 +59,15 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.activity_main_drawer_news:
+            case R.id.activity_main_drawer_home:
                 break;
             case R.id.activity_main_drawer_profile:
                 break;
-            case R.id.activity_main_drawer_settings:
+            case R.id.activity_main_drawer_demmande_de_service:
+                break;
+            case R.id.activity_main_drawer_history:
+                break;
+            case R.id.activity_main_drawer_logout:
                 break;
             default:
                 break;
