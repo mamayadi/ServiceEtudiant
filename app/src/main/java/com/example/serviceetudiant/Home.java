@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,6 +25,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
+    private boolean viewIsAtHome;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +40,61 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         this.configureDrawerLayout();
 
         this.configureNavigationView();
-
+        displayView(R.id.activity_main_drawer_news);
         User connectedUser = session.getConnectedUser();
         Toast.makeText(getApplicationContext(), connectedUser.getNom() + " " + connectedUser.getPasswd(), Toast.LENGTH_LONG).show();
+    }
+
+    public void displayView(int viewId) {
+
+        Fragment fragment = null;
+        String title = getString(R.string.app_name);
+
+        switch (viewId) {
+            case R.id.activity_main_drawer_news:
+                fragment = new AcceuilFragment();
+                viewIsAtHome = true;
+                title  = "News";
+                break;
+
+            case R.id.activity_main_drawer_demande:
+                fragment = new DemandeServiceFragment();
+                viewIsAtHome = false;
+                title  = "Demande service";
+                break;
+            case R.id.activity_main_drawer_history:
+                fragment = new History();
+                viewIsAtHome = false;
+                title  = "History";
+                break;
+            case R.id.activity_main_drawer_profile:
+                fragment = new AcceuilFragment();
+                viewIsAtHome = false;
+                title  = "Profile";
+                break;
+            case R.id.activity_main_drawer_settings:
+                fragment = new AcceuilFragment();
+                viewIsAtHome = false;
+                title  = "Settings";
+                break;
+            default:
+                break;
+
+        }
+
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.activity_main_frame_layout, fragment);
+            ft.commit();
+        }
+
+        // set the toolbar title
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
@@ -46,8 +102,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         // 5 - Handle back click to close menu
         if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             this.drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        }else {
             super.onBackPressed();
+        }
+        if (!viewIsAtHome) { //if the current view is not the News fragment
+            displayView(R.id.activity_main_drawer_news); //display the News fragment
+        } else {
+            moveTaskToBack(true);  //If view is in News fragment, exit application
         }
     }
 
@@ -56,7 +117,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     public boolean onNavigationItemSelected(MenuItem item) {
 
         // 4 - Handle Navigation Item Click
-        int id = item.getItemId();
+       /* int id = item.getItemId();
 
         switch (id) {
             case R.id.activity_main_drawer_home:
@@ -73,8 +134,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 break;
         }
 
-        this.drawerLayout.closeDrawer(GravityCompat.START);
-
+        this.drawerLayout.closeDrawer(GravityCompat.START);*/
+        displayView(item.getItemId());
         return true;
     }
 
