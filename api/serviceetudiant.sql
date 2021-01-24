@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 22 jan. 2021 à 21:26
+-- Généré le : Dim 24 jan. 2021 à 03:54
 -- Version du serveur :  10.4.14-MariaDB
 -- Version de PHP : 7.4.10
 
@@ -32,6 +32,14 @@ CREATE TABLE `etablissement` (
   `libelle` varchar(20) NOT NULL,
   `adresse` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `etablissement`
+--
+
+INSERT INTO `etablissement` (`id`, `libelle`, `adresse`) VALUES
+(1, 'IPSAS', '5 août'),
+(2, 'ISIMS', 'Rte Tunis km 10');
 
 -- --------------------------------------------------------
 
@@ -71,15 +79,15 @@ CREATE TABLE `service_user` (
 --
 
 INSERT INTO `service_user` (`id`, `id_service`, `id_user`, `date_demande`, `etat_demande`) VALUES
-(1, 1, 1, 'nharda el sob7', 'demande'),
-(2, 2, 1, 'now', 'demande'),
-(3, 2, 2, 'test', 'demande'),
-(4, 2, 2, 'test', 'demande'),
-(5, 1, 3, 'test', 'termine'),
-(6, 1, 3, 'test', 'termine'),
-(7, 1, 3, 'test', 'termine'),
-(8, 1, 3, 'test', 'termine'),
-(9, 1, 3, 'test', 'termine');
+(1, 1, 1, 'Sun Jan 24 01:17:38 ', 'Demander'),
+(2, 2, 1, 'Sun Jan 24 01:17:38 ', 'Demander'),
+(3, 2, 2, 'Sun Jan 24 01:17:38 ', 'Demander'),
+(4, 2, 2, 'Sun Jan 24 01:17:38 ', 'Demander'),
+(18, 1, 1, 'Sun Jan 24 01:17:38 ', 'Demander'),
+(19, 2, 1, 'Sun Jan 24 01:27:12 ', 'Demander'),
+(20, 2, 1, 'Sun Jan 24 03:40:23 ', 'Demander'),
+(21, 2, 2, 'Sun Jan 24 03:41:14 ', 'Demander'),
+(22, 2, 2, 'Sun Jan 24 03:47:29 ', 'Demander');
 
 -- --------------------------------------------------------
 
@@ -104,11 +112,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `iu`, `nom`, `prenom`, `id_etablissement`, `login`, `passwd`, `autorisation`) VALUES
 (1, 1111, 'mohamed', 'ayadi', 1, 'medayadi', '123', 'test'),
-(2, 111, 'med', 'ayadi', 1, 'medayadi', '123', 'test'),
-(3, 111, 'med', 'ayadi', 1, 'medayadi', '123', 'test'),
-(4, 111, 'med', 'ayadi', 1, 'medayadi', '123', 'test'),
-(5, 111, 'med', 'ayadi', 1, 'medayadi', '123', 'test'),
-(6, 111, 'med', 'ayadi', 1, 'medayadi', '123', 'test');
+(2, 2222, 'skander', 'Hadj Kacem', 1, 'skanderhk', '123', 'test');
 
 --
 -- Index pour les tables déchargées
@@ -130,13 +134,16 @@ ALTER TABLE `service`
 -- Index pour la table `service_user`
 --
 ALTER TABLE `service_user`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_user` (`id_user`),
+  ADD KEY `id_service` (`id_service`);
 
 --
 -- Index pour la table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_etablissement` (`id_etablissement`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -146,7 +153,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT pour la table `etablissement`
 --
 ALTER TABLE `etablissement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `service`
@@ -158,13 +165,30 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT pour la table `service_user`
 --
 ALTER TABLE `service_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `service_user`
+--
+ALTER TABLE `service_user`
+  ADD CONSTRAINT `service_user_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `service_user_ibfk_2` FOREIGN KEY (`id_service`) REFERENCES `service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `user`
+--
+ALTER TABLE `user`
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`id_etablissement`) REFERENCES `etablissement` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
